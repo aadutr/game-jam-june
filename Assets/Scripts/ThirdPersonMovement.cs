@@ -5,7 +5,7 @@ using UnityEngine;
 public class ThirdPersonMovement : MonoBehaviour
 {
     public CharacterController controller;
-    // public Animator animator;
+    public Animator animator;
     public Transform cam;
 
     public float speed = 6f;
@@ -18,12 +18,16 @@ public class ThirdPersonMovement : MonoBehaviour
     private bool playerGrounded;
     private Vector3 jumpDirection = Vector3.zero;
 
+    int isRunningHash = Animator.StringToHash("isRunning");
+    int isJumpingHash = Animator.StringToHash("isJumping");
+
     // Update is called once per frame
     void Update()
     {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         Vector3 direction = new Vector3(horizontal, 0f, vertical).normalized;
+        
 
         if (direction.magnitude >= 0.1f){
             float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
@@ -31,7 +35,8 @@ public class ThirdPersonMovement : MonoBehaviour
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
             Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            controller.Move(moveDirection.normalized * speed * Time.deltaTime);
+
+            controller.Move(moveDirection.normalized * speed* Time.deltaTime);
         }
 
         playerGrounded = controller.isGrounded;
@@ -46,7 +51,7 @@ public class ThirdPersonMovement : MonoBehaviour
         controller.Move(jumpDirection * Time.deltaTime);
 
         //animations
-        // animator.SetBool("isRunning", Input.GetAxisRaw("Vertical") != 0);
-        // animator.SetBool("isJumping", !controller.isGrounded);
+        animator.SetBool(isRunningHash, direction.magnitude >= 0.1f);
+        animator.SetBool(isJumpingHash, !controller.isGrounded);
     }
 }
