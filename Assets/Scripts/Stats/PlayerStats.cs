@@ -11,20 +11,10 @@ public class PlayerStats : CharacterStats
         // EquipmentManager.instance.onEquipmentChanged += onEquipmentChanged;
     }
 
-    // Update is called once per frame
-    // void onEquipmentChanged (Equipment newItem, Equipment oldItem)
-    // {
-    //     if (newItem != null)
-    //     {
-    //         armor.AddModifier(newItem.armorModifier);
-    //         damage.AddModifier(newItem.damageModifier);
-    //     }
-
-    //     if (oldItem != null)
-    //     {
-    //         armor.RemoveModifier(oldItem.armorModifier);
-    //         damage.RemoveModifier(oldItem.damageModifier);
-    //     }
-
-    // }
+    public override void Die ()
+    {
+        base.Die();
+        // Kill the player in some way
+        PlayerManager.instance.KillPlayer();
+    }
 }
