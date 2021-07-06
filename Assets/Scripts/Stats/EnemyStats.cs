@@ -4,11 +4,21 @@ using UnityEngine;
 
 public class EnemyStats : CharacterStats
 {
+    public Animator animator;
+    
     public override void Die()
     {
         base.Die();
 
-        // Add ragdoll effect / death animation
+        // Death animation
+        animator.SetTrigger("Die");
+
+        StartCoroutine(DestroyObject());
+    }
+
+    IEnumerator DestroyObject ()
+    {
+        yield return new WaitForSeconds(6);
 
         Destroy(gameObject);
     }
