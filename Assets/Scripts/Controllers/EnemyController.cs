@@ -8,13 +8,18 @@ public class EnemyController : MonoBehaviour
     public float lookRadius = 10f;
 
     Transform target;
-    NavMeshAgent agent;
+    public NavMeshAgent agent;
+    CharacterCombat combat;
+
+    int isRunningHash = Animator.StringToHash("isRunning");
+    public Animator animator;
     
     // Start is called before the first frame update
     void Start()
     {
         target = PlayerManager.instance.player.transform;
         agent = GetComponent<NavMeshAgent>();
+        combat = GetComponent<CharacterCombat>();
     }
 
     // Update is called once per frame
@@ -29,10 +34,18 @@ public class EnemyController : MonoBehaviour
             if (distance <= agent.stoppingDistance)
             {
                 // Attack
+                CharacterStats targetStats = target.GetComponent<CharacterStats>();
+                if (targetStats != null)
+                {
+                    combat.Attack(targetStats);
+                }
                 FaceTarget();             
             }
+            //animations
+            animator.SetBool(isRunningHash, distance > agent.stoppingDistance);
+            Debug.Log("Distance " + distance + ", stopping distance " + agent.stoppingDistance);
         }
-
+        
     }
 
     void FaceTarget () 
@@ -46,5 +59,7 @@ public class EnemyController : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, lookRadius);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, agent.stoppingDistance);
     }
 }

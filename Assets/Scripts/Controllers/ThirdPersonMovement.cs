@@ -7,6 +7,8 @@ public class ThirdPersonMovement : MonoBehaviour
     public CharacterController controller;
     public Animator animator;
     public Transform cam;
+    
+    CharacterCombat combat;
 
     public float speed = 6f;
     public float turnSmoothTime = 0.1f;
@@ -20,6 +22,12 @@ public class ThirdPersonMovement : MonoBehaviour
 
     int isRunningHash = Animator.StringToHash("isRunning");
     int isJumpingHash = Animator.StringToHash("isJumping");
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        combat = GetComponent<CharacterCombat>();
+    }
 
     // Update is called once per frame
     void Update()
@@ -41,7 +49,7 @@ public class ThirdPersonMovement : MonoBehaviour
 
         playerGrounded = controller.isGrounded;
 
-        //jumping
+        // Jumping
         if(Input.GetButton("Jump") && playerGrounded)
         {
             jumpDirection.y = jumpSpeed;
@@ -50,8 +58,29 @@ public class ThirdPersonMovement : MonoBehaviour
 
         controller.Move(jumpDirection * Time.deltaTime);
 
+        // Attacking, left mouse button
+        if(Input.GetMouseButtonDown(0))
+        {
+            // Get CharacterStats of anything within range
+            Collider[] hitEnemies = combat.EnemiesInRange();
+
+            
+            // Get enemy stats
+            CharacterStats enemyStats = null;
+            if (hitEnemies.Length != 0)
+            {
+                Collider enemy = hitEnemies[0];
+                enemyStats = enemy.GetComponent<CharacterStats>();
+            }            
+            
+            // Attack
+            combat.Attack(enemyStats);            
+        }
+
         //animations
         animator.SetBool(isRunningHash, direction.magnitude >= 0.1f);
         animator.SetBool(isJumpingHash, !controller.isGrounded);
     }
+
+    
 }
