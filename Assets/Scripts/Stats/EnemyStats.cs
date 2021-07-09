@@ -12,13 +12,14 @@ public class EnemyStats : CharacterStats
 
         // Death animation
         animator.SetTrigger("Die");
+        animator.SetBool("hasDied", true);
 
         StartCoroutine(DestroyObject());
     }
 
     IEnumerator DestroyObject ()
     {
-        yield return new WaitForSeconds(6);
+        yield return new WaitForSeconds(4);
 
         Destroy(gameObject);
     }
